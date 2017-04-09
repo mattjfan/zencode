@@ -12,11 +12,11 @@ class Compiler():
 			outputString+='	pass\n'
 		else:
 			for child in childFunctions:
-				outputString+="	{}\n".format(cls.doFunction(child))
+				outputString+="	{}".format(cls.doFunction(child))
 			pass
 		return outputString
 	def writePrintString(string):
-		return "print('{}')".format(string.strip())
+		return "print('{}')\n".format(string.strip())
 	@classmethod		
 	def doFunction(cls,function):#redirect to respective function writers
 		if function['function']=='loop':
@@ -32,8 +32,21 @@ class Compiler():
 	
 	@classmethod	
 	def runCompiler(cls, stringIn):
+		"""
 		function=Interpreter.runInterpreter(stringIn)
 		return cls.doFunction(function)
+		"""
+		try:
+			strings=Interpreter.splitIntoSentences(stringIn)
+			outputCode=""
+			for string in strings:
+				print (string)
+				function=Interpreter.runInterpreter(string)
+				outputCode+= cls.doFunction(function)
+				
+			return outputCode
+		except:return "Sorry, could not compile"
+		
 		
 #print (Compiler.writeNormalLoop(12,[]))
 initialize()
