@@ -46,7 +46,8 @@ class Interpreter():
 			else:
 				cls.keywords[word]=[function_name]
 	def splitIntoSentences(stringIn):
-		return stringIn.split('.')
+		sentences=stringIn.split('.')
+		return [sentence for sentence in sentences if sentence != ""]
 		
 	def stripPunctuation(stringIn):
 		stringOut=stringIn
@@ -253,15 +254,17 @@ class Interpreter():
 					closestIndex=None
 					smallestDistance=None
 					keyWordIndex=20#favor the end of sentence?
+					loopCount=None
 					for word in Interpreter.getValues(stringIn):
 						if word['value'] in Interpreter.keywords:
 							if Interpreter.keywords[word['value']]=='loop':
 								keyWordIndex=word['index']
 								break
 					for word in Interpreter.getValuesOfType(stringIn,'int'):
-						if closestIndex==None or math.abs(keyWordIndex-word['index'])<smallestDistance:
+						if closestIndex==None or abs(keyWordIndex-word['index'])<smallestDistance:
 							closestIndex=word['index']
-							smallestDistance=math.abs(keyWordIndex-closestIndex)
+							loopCount=word['value']
+							smallestDistance=abs(keyWordIndex-closestIndex)
 					functionOut = {'function':'loop','args':{'loopCount':loopCount},'children':[]}	
 							
 								
@@ -327,7 +330,7 @@ class Interpreter():
 			
 			stringOut=""
 			for word in unpackedValues:
-				stringOut+=word['value']
+				stringOut+=str(word['value'])
 				stringOut+=" "
 			return stringOut	#return as string
 			
@@ -345,7 +348,7 @@ class Interpreter():
 			#return unpackedValues
 			stringOut=""
 			for word in unpackedValues:
-				stringOut+=word['value']
+				stringOut+=str(word['value'])
 				stringOut+=" "
 				
 			return stringOut.split('^')
@@ -439,6 +442,7 @@ if __name__ == '__main__':
 	print(Interpreter.getInput("Type a number"))
 	Interpreter.runInterpreter("loop 23 times")
 	print(Interpreter.stripPunctuation("..'sloop',"))
+	print(Interpreter.splitIntoSentences('I like you.you like me... let me oh no wait.'))
 	Interpreter.runInterpreter("Print the dog's name then print the cat's name 5 times")
 	print(Interpreter.Functions.unpackFromLoop("Do something 5 times loop"))
 	print(Interpreter.Functions.splitByNext("print this then that"))
