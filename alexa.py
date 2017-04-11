@@ -12,6 +12,10 @@ import flask
 app = flask.Flask(__name__)
 DEBUG=True
 code=""
+#IMPORTANT: Need to configure these for message sending to work
+SENDER='' #Gmail address to send messages
+PASSWORD='' #SENDER password
+TARGET=''#Where to send the messages
 
 @app.after_request
 def add_header(response):
@@ -49,15 +53,15 @@ def redirect():
 	return flask.redirect('/')
 	
 	
-def sendMessage(message_text='No Message Content',target='2405852538@vtext.com'):
+def sendMessage(message_text='No Message Content',target=TARGET):
 	print(message_text)
 	message = MIMEText(message_text)
 	message['Date'] = formatdate()
-	message['From'] = "zencodehackathon@gmail"
+	message['From'] = SENDER
 	server = smtplib.SMTP('smtp.gmail.com', 587)
 	server.starttls()
-	server.login("zencodehackathon@gmail.com", "bitcamp2017")
-	server.sendmail("zencodehackathon@gmail.com", "2405852538@vtext.com", message.as_string())
+	server.login(SENDER, PASSWORD)
+	server.sendmail(SENDER, TARGET, message.as_string())
 	server.quit()
 """
 myMessage=str(Compiler.runCompiler("Say Hello 6 times"))
